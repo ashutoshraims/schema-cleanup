@@ -35,10 +35,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.http.HttpStatusCode;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,10 +115,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(@NonNull HttpRequestMethodNotSupportedException e,
-                                                                         @NonNull HttpHeaders headers,
-                                                                         @NonNull HttpStatus status,
-                                                                         @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            @NonNull HttpRequestMethodNotSupportedException e,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         return this.getErrorResponse(
                 new AppException(HttpStatus.METHOD_NOT_ALLOWED.value(), "Method not found.",
                         "Method not found.", e));
