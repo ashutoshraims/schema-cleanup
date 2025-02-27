@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}"
+  namespace: "{{ .Values.namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}"
+        aadpodidbinding: "osdu-identity"
+    spec:
+      containers:
+        - name: "{{ .Chart.Name }}"
+          image: "{{ .Values.image.repository }}/schema-cleanup-main:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "{{ .Values.config.requests.cpu }}"
+              memory: "{{ .Values.config.requests.memory }}"
+            limits:
+              cpu: "{{ .Values.config.limits.cpu }}"
+              memory: "{{ .Values.config.limits.memory }}"
+          env:
+          - name: blob_account_key
+            valueFrom:
+             secretKeyRef:
+              name: schema-cleanup-secret
+              key: blob_account_key 
+          - name: blob_account_name
+            valueFrom:
+             secretKeyRef:
+              name: schema-cleanup-secret
+              key: blob_account_name 
+          - name: cosmos_host
+            valueFrom:
+             secretKeyRef:
+              name: schema-cleanup-secret
+              key: cosmos_host
+          - name: cosmos_key
+            valueFrom:
+             secretKeyRef:
+              name: schema-cleanup-secret
+              key: cosmos_key
+          - name: LOG_PREFIX
+            value: schema-cleanup
+          - name: schema_query_params_id
+            valueFrom:
+             secretKeyRef:
+              name: schema-cleanup-secret
+              key: schema_query_params_id
+          - name: system_blob_account_key
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_blob_account_key
+          - name: system_blob_account_name
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_blob_account_name
+          - name: system_cosmos_host
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_cosmos_host
+          - name: system_cosmos_key
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_cosmos_key
+          - name: system_schema_query_params_id
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_schema_query_params_id
+          - name: system_schema_query_params_id
+            valueFrom:
+              secretKeyRef:
+                name: schema-cleanup-secret
+                key: system_schema_query_params_id

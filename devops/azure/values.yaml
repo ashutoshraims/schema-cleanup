@@ -1,0 +1,49 @@
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+global:
+  replicaCount: 1
+  nodepool: services
+  isAutoscalingEnabled: false
+
+
+image:
+  repository: osdumvpcrglabqh63cr.azurecr.io
+  tag: latest
+
+istioDnsHost: "osdu-glab.msft-osdu-test.org"
+
+namespace: "osdu"
+
+config:
+  requests:
+    cpu: "100m"
+    memory: "300Mi"
+  limits:
+    cpu: "300m"
+    memory: "500Mi"
+
+secret:
+  blob_account_key: <blobaccountkey>
+  blob_account_name: <blobaccountname>
+  cosmos_host: <cosmoshost>
+  cosmos_key: <cosmoskey>
+  schema_query_params_id: <kindtodelete>
+  system_blob_account_key: <systemblobaccountkey>
+  system_blob_account_name: <systemblobaccountname>
+  system_cosmos_host: <systemcosmoshost>
+  system_cosmos_key: <systemcosmoskey>
+  system_schema_query_params_id: <systemkindtodelete>
+
+env: glab

@@ -1,0 +1,11 @@
+version: 2
+cli:
+  server: https://app.fossa.com
+  fetcher: custom
+  project: schema-clean-up
+analyze:
+  modules:
+    - name: schema-clean-up
+      type: mvn
+      target: pom.xml
+      path: .

@@ -1,0 +1,46 @@
+variables:
+  AZURE_BUILD_SUBDIR: /
+  SCHEMA_KIND: opendes:SchemaSanityTest:testSource:testEntity
+  SYSTEM_SCHEMA_KIND: SchemaSanityTest:testSource:testEntity
+include:
+ - project: "osdu/platform/ci-cd-pipelines"
+   file: "standard-setup.yml"
+
+ - project: "osdu/platform/ci-cd-pipelines"
+   file: "build/maven.yml"
+
+ - project: "osdu/platform/ci-cd-pipelines"
+   file: "scanners/fossa-maven.yml"
+
+ - project: "osdu/platform/ci-cd-pipelines"
+   file: "cloud-providers/azure.yml"
+
+ - project: "osdu/platform/ci-cd-pipelines"
+   file: "scanners/gitlab-ultimate.yml"
+
+ - local: "devops/azure/override-stages.yml" 
+
+.maven:
+  image: maven:3.9.3-eclipse-temurin-17
+
+gemnasium-maven-dependency_scanning:
+  variables:
+    DS_JAVA_VERSION: 17
+
+fossa-analyze:
+  image: $CI_REGISTRY/divido/fossa-with-cache:v0.9-jdk17
+fossa-check-notice:
+  image: $CI_REGISTRY/divido/fossa-with-cache:v0.9-jdk17
+
+azure_containerize:
+  variables:
+    AZURE_CONTAINERIZE_REPOSITORY: "https://gitlab-ci-token:${CI_JOB_TOKEN}@community.opengroup.org/osdu/platform/deployment-and-operations/base-containers-azure/service-base-image"
+
+clean-test-schemas:
+  tags: ["osdu-medium"]
+  image: curlimages/curl
+  stage: clean
+  # needs: ["azure_test"]
+  script:
+  - echo "deleting test schemas.."
+  - curl -v --location --request POST 'https://osdu-glab.msft-osdu-test.org/api/schema-cleanup-service/v1/schemas' 
